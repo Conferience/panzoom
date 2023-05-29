@@ -326,6 +326,7 @@ function createPanZoom(domElement, options) {
     }
 
     // y axis:
+    var _hasYAdjustment = false;
     diff = boundingBox.top - clientRect.bottom;
     if (diff > 0) {
       // we adjust transform, so that it matches exactly our bounding box:
@@ -334,12 +335,22 @@ function createPanZoom(domElement, options) {
       // transform.y = diff + transform.y =>
       transform.y += diff;
       adjusted = true;
+      _hasYAdjustment = true;
     }
 
     diff = boundingBox.bottom - clientRect.top;
     if (diff < 0) {
       transform.y += diff;
       adjusted = true;
+      _hasYAdjustment = true;
+    }
+
+    if(_hasYAdjustment && transform.y>0){
+      var parentHeigh = Math.abs(boundingBox.top) + Math.abs(boundingBox.bottom);
+      var clientHeigh = Math.abs(clientRect.top) + Math.abs(clientRect.bottom);
+      if(clientHeigh<parentHeigh){
+        transform.y = 0;
+      }
     }
     return adjusted;
   }
